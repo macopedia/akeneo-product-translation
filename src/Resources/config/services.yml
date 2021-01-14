@@ -1,0 +1,29 @@
+services:
+  Codehat\TranslationExtension\Translator\GoogleTranslator:
+    arguments:
+      - 'teste'
+
+  Codehat\TranslationExtension\Connector\Processor\MassEdit\TranslateAttributesProcessor:
+    arguments:
+      - '@Codehat\TranslationExtension\Translator\GoogleTranslator'
+      - '@pim_catalog.updater.property_setter'
+
+  codehat.job.translate:
+    class: '%pim_connector.job.simple_job.class%'
+    arguments:
+      - 'translate_attributes'
+      - '@event_dispatcher'
+      - '@akeneo_batch.job_repository'
+      - [ '@codehat.job.translate_attributes.step' ]
+    tags:
+      - { name: akeneo_batch.job, connector: 'Codehat Translator', type: '%pim_enrich.job.mass_edit_type%' } ]
+
+  codehat.job.translate_attributes.step:
+    class: '%pim_connector.step.item_step.class%'
+    arguments:
+      - 'perform'
+      - '@event_dispatcher'
+      - '@akeneo_batch.job_repository'
+      - '@pim_enrich.reader.database.product_and_product_model'
+      - '@Codehat\TranslationExtension\Connector\Processor\MassEdit\TranslateAttributesProcessor'
+      - '@pim_connector.writer.database.product'
