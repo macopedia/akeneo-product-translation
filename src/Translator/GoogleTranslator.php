@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Codehat\TranslationExtension\Translator;
+namespace Piotrmus\Translator\Translator;
 
 
 use Google\Cloud\Translate\V2\TranslateClient;

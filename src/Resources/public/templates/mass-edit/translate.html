@@ -1,0 +1,80 @@
+<div class="AknFieldContainer">
+    <div class="AknFieldContainer-header">
+        <label class="AknFieldContainer-label control-label AknFieldContainer-label required"
+               for="translated-attributes">
+            <%= _.__('Attributes to translate') %>
+        </label>
+    </div>
+    <div class="AknFieldContainer-inputContainer">
+        <select name="translatedAttributes[]" id="translated-attributes" class="select2 label-field AknSettingField" multiple="multiple" <%
+        if(false) { %> disabled <% } %>>
+        <% _.each(attributes, function (attribute){ %>
+        <option value="<%= attribute.code %>"><%= attribute.labels.en_US %></option>
+        <% }); %>
+        </select>
+    </div>
+</div>
+<div class="AknFieldContainer">
+    <div class="AknFieldContainer-header">
+        <label class="AknFieldContainer-label control-label AknFieldContainer-label required" for="source-channel">
+            <%= _.__('Source channel') %>
+        </label>
+    </div>
+    <div class="AknFieldContainer-inputContainer">
+        <select name="sourceChannel" id="source-channel" class="select2 form-field label-field AknSettingField" <%
+        if(false) { %> disabled <% } %>>
+        <% _.each(channels, function (channel, key){ %>
+        <option value="<%= channel.code %>"
+        <% if(sourceChannel === channel.code) { %> selected="selected" <% } %>><%= channel.labels.en_US %></option>
+        <% }); %>
+        </select>
+    </div>
+</div>
+<div class="AknFieldContainer">
+    <div class="AknFieldContainer-header">
+        <label class="AknFieldContainer-label control-label AknFieldContainer-label required" for="source-locale">
+            <%= _.__('Source locale') %>
+        </label>
+    </div>
+    <div class="AknFieldContainer-inputContainer">
+        <select name="sourceLocale" id="source-locale" class="select2 form-field label-field AknSettingField" <%
+        if(false) { %> disabled <% } %>>
+        <% _.each(locales, function (locale, key){ %>
+        <option value="<%= locale.code %>"
+        <% if(sourceLocale === locale.code) { %> selected="selected" <% } %>><%= locale.label %></option>
+        <% }); %>
+        </select>
+    </div>
+</div>
+<div class="AknFieldContainer">
+    <div class="AknFieldContainer-header">
+        <label class="AknFieldContainer-label control-label AknFieldContainer-label required" for="target-channel">
+            <%= _.__('Target channel') %>
+        </label>
+    </div>
+    <div class="AknFieldContainer-inputContainer">
+        <select name="targetChannel" id="target-channel" class="select2 form-field label-field AknSettingField" <%
+        if(false) { %> disabled <% } %>>
+        <% _.each(channels, function (channel, key){ %>
+        <option value="<%= channel.code %>"
+        <% if(targetChannel === channel.code) { %> selected="selected" <% } %>><%= channel.labels.en_US %></option>
+        <% }); %>
+        </select>
+    </div>
+</div>
+<div class="AknFieldContainer">
+    <div class="AknFieldContainer-header">
+        <label class="AknFieldContainer-label control-label AknFieldContainer-label required" for="target-locale">
+            <%= _.__('Target locale') %>
+        </label>
+    </div>
+    <div class="AknFieldContainer-inputContainer">
+        <select name="targetLocale" id="target-locale" class="select2 form-field label-field AknSettingField" <%
+        if(false) { %> disabled <% } %>>
+        <% _.each(locales, function (locale, key){ %>
+        <option value="<%= locale.code %>"
+        <% if(targetLocale === locale.code) { %> selected="selected" <% } %>><%= locale.label %></option>
+        <% }); %>
+        </select>
+    </div>
+</div>

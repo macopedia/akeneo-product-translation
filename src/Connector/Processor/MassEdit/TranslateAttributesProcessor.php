@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Codehat\TranslationExtension\Connector\Processor\MassEdit;
+namespace Piotrmus\Translator\Connector\Processor\MassEdit;
 
 
 use Akeneo\Pim\Enrichment\Component\Product\Connector\Processor\MassEdit\AbstractProcessor;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ValueInterface;
-use Akeneo\Tool\Component\StorageUtils\Updater\PropertySetterInterface;
-use Codehat\TranslationExtension\Translator\Language;
-use Codehat\TranslationExtension\Translator\TranslatorInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Value\ScalarValue;
+use Piotrmus\Translator\Translator\Language;
+use Piotrmus\Translator\Translator\TranslatorInterface;
 
 class TranslateAttributesProcessor extends AbstractProcessor
 {
@@ -18,45 +18,42 @@ class TranslateAttributesProcessor extends AbstractProcessor
      * @var TranslatorInterface
      */
     private $translator;
-    /**
-     * @var PropertySetterInterface
-     */
-    private $propertySetter;
 
     public function __construct(
-        TranslatorInterface $translator,
-        PropertySetterInterface $propertySetter
+        TranslatorInterface $translator
     ) {
         $this->translator = $translator;
-        $this->propertySetter = $propertySetter;
     }
 
     /**
-     * @param ProductInterface|ProductModelInterface $item
-     * @return void
+     * @param ProductInterface|ProductModelInterface $product
+     * @return ProductInterface
      */
-    public function process($item): void
+    public function process($product): ProductInterface
     {
         $actions = $this->getConfiguredActions();
         $action = $actions[0];
-        $this->translateAttributes($item, $action);
+        $product = $this->translateAttributes($product, $action);
+        return $product;
     }
 
     /**
      * @param ProductInterface|ProductModelInterface $product
      * @param array $action
      */
-    private function translateAttributes($product, array $action): void
+    private function translateAttributes($product, array $action): ProductInterface
     {
-        $sourceScope = $action['sourceScope'];
-        $targetScope = $action['targetScope'];
-        $sourceLocale = new Language($action['sourceLocale']);
-        $targetLocale = new Language($action['targetLocale']);
-        $attributeCodes = $action['attributes'];
+        $sourceScope = $action['sourceChannel'];
+        $targetScope = $action['targetChannel'];
+        $sourceLocaleAkeneo = $action['sourceLocale'];
+        $targetLocaleAkeneo = $action['targetLocale'];
+        $sourceLocale = new Language(explode('_', $sourceLocaleAkeneo)[0]);
+        $targetLocale = new Language(explode('_', $targetLocaleAkeneo)[0]);
+        $attributeCodes = $action['translatedAttributes'];
 
         foreach ($attributeCodes as $attributeCode) {
             /** @var ValueInterface|null $attributeValue */
-            $attributeValue = $product->getValue($attributeCode, $sourceLocale, $sourceScope);
+            $attributeValue = $product->getValue($attributeCode, $sourceLocaleAkeneo, $sourceScope);
 
             if ($attributeValue === null) {
                 continue;
@@ -69,16 +66,39 @@ class TranslateAttributesProcessor extends AbstractProcessor
                 $sourceLocale,
                 $targetLocale
             );
-            
-            $this->propertySetter->setData(
-                $product,
-                $attributeCode,
-                $translatedValue,
-                [
-                    'locale' => $targetLocale,
-                    'scope' => $targetScope,
-                ]
-            );
+
+            $this->replaceProductValue($product, $attributeCode, $targetLocaleAkeneo, $targetScope, $translatedValue);
         }
+        return $product;
+    }
+
+    /**
+     * @param ProductInterface $product
+     * @param string $attributeCode
+     * @param $targetLocale
+     * @param $targetScope
+     * @param string $newValue
+     */
+    private function replaceProductValue(
+        ProductInterface $product,
+        string $attributeCode,
+        $targetLocale,
+        $targetScope,
+        string $newValue
+    ): void {
+        $targetAttributeValue = $product->getValue($attributeCode, $targetLocale, $targetScope);
+
+        if ($targetAttributeValue !== null) {
+            $product->removeValue($targetAttributeValue);
+        }
+
+        $product->addValue(
+            ScalarValue::scopableLocalizableValue(
+                $attributeCode,
+                $newValue,
+                $targetScope,
+                $targetLocale
+            )
+        );
     }
 }

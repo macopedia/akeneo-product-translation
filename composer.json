@@ -1,11 +1,12 @@
 {
-  "name": "codehat/akeneo-translation",
+  "name": "piotrmus/akeneo-product-translation",
   "type": "symfony-bundle",
-  "description": "Codehat translation extension for Akeneo",
+  "description": "Translation extension for Akeneo",
+  "version": "1.0.0",
   "license": "OSL-3.0",
   "authors": [
     {
-      "name": "Codehat",
+      "name": "Piotr Musiał",
       "homepage": "https://www.codehat.pl"
     }
   ],
@@ -15,7 +16,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Codehat\\TranslationExtension\\": "src/"
+      "Piotrmus\\Translator\\": "src/"
     }
   },
   "require-dev": {

@@ -1,0 +1,13 @@
+extensions:
+  piotrmus-mass-product-edit-configure-add-comment:
+    module: piotrmus-translator/mass-edit/translate
+    parent: pim-mass-product-edit
+    position: 500
+    config:
+      title: pim_enrich.mass_edit.product.title
+      label: 'Translate Product'
+      labelCount: "{1}Add comment to <span class=\"AknFullPage-title--highlight\">1 product</span>|]1, Inf[Add comment to <span class=\"AknFullPage-title--highlight\">{{ itemsCount }} products</span>"
+      description: 'Add a comment for a set of products'
+      code: update_product_translations
+      jobInstanceCode: update_product_translations
+      icon: icon-compare

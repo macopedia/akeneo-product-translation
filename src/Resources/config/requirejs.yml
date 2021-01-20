@@ -1,0 +1,4 @@
+config:
+  paths:
+    piotrmus-translator/mass-edit/translate: piotrmustranslator/js/mass-edit/translate
+    piotrmus-translator/template/mass-edit/translate: piotrmustranslator/templates/mass-edit/translate.html
