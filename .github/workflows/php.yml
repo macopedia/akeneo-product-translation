@@ -2,39 +2,39 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, github-actions ]
   pull_request:
     branches: [ main ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: PECL extension
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '7.4'
-        extensions: imagic
+      - name: PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+          coverage: xdebug
+          extensions: imagic, ext-apcu, ext-bcmath, ext-curl, ext-dom, ext-exif, ext-fileinfo, ext-filter, ext-gd, ext-imagick, ext-intl, ext-json, ext-libxml, ext-mbstring, ext-openssl, ext-pdo, ext-phar, ext-simplexml, ext-tokenizer, ext-xml, ext-xmlreader, ext-xmlwriter, ext-zip
 
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    - name: Install dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Run test suite
-      run: composer run-script test
+      - name: Run test suite
+        run: composer run-script test
