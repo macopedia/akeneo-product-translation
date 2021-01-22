@@ -3,12 +3,12 @@
 
 namespace Piotrmus\Translator\Connector\Processor\MassEdit;
 
-
 use Akeneo\Pim\Enrichment\Component\Product\Connector\Processor\MassEdit\AbstractProcessor;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ValueInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Value\ScalarValue;
+use InvalidArgumentException;
 use Piotrmus\Translator\Translator\Language;
 use Piotrmus\Translator\Translator\TranslatorInterface;
 
@@ -26,29 +26,34 @@ class TranslateAttributesProcessor extends AbstractProcessor
     }
 
     /**
-     * @param ProductInterface|ProductModelInterface $product
-     * @return ProductInterface
+     * @param mixed $item
+     * @return ProductInterface|ProductModelInterface
      */
-    public function process($product): ProductInterface
+    public function process($item)
     {
+        if (!$item instanceof ProductInterface && !$item instanceof ProductModelInterface) {
+            throw new InvalidArgumentException("Invalid $item type to this processor");
+        }
         $actions = $this->getConfiguredActions();
         $action = $actions[0];
-        $product = $this->translateAttributes($product, $action);
-        return $product;
+        $item = $this->translateAttributes($item, $action);
+
+        return $item;
     }
 
     /**
      * @param ProductInterface|ProductModelInterface $product
-     * @param array $action
+     * @param array<string, string|array<int, string>> $action
+     * @return ProductInterface|ProductModelInterface
      */
-    private function translateAttributes($product, array $action): ProductInterface
+    private function translateAttributes($product, array $action)
     {
         $sourceScope = $action['sourceChannel'];
         $targetScope = $action['targetChannel'];
         $sourceLocaleAkeneo = $action['sourceLocale'];
         $targetLocaleAkeneo = $action['targetLocale'];
-        $sourceLocale = new Language(explode('_', $sourceLocaleAkeneo)[0]);
-        $targetLocale = new Language(explode('_', $targetLocaleAkeneo)[0]);
+        $sourceLocale = Language::fromCode(explode('_', $sourceLocaleAkeneo)[0]);
+        $targetLocale = Language::fromCode(explode('_', $targetLocaleAkeneo)[0]);
         $attributeCodes = $action['translatedAttributes'];
 
         foreach ($attributeCodes as $attributeCode) {
@@ -75,15 +80,15 @@ class TranslateAttributesProcessor extends AbstractProcessor
     /**
      * @param ProductInterface $product
      * @param string $attributeCode
-     * @param $targetLocale
-     * @param $targetScope
+     * @param string $targetLocale
+     * @param string $targetScope
      * @param string $newValue
      */
     private function replaceProductValue(
         ProductInterface $product,
         string $attributeCode,
-        $targetLocale,
-        $targetScope,
+        string $targetLocale,
+        string $targetScope,
         string $newValue
     ): void {
         $targetAttributeValue = $product->getValue($attributeCode, $targetLocale, $targetScope);

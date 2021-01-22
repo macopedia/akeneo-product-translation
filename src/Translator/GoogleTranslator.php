@@ -3,7 +3,6 @@
 
 namespace Piotrmus\Translator\Translator;
 
-
 use Google\Cloud\Translate\V2\TranslateClient;
 
 class GoogleTranslator implements TranslatorInterface
@@ -14,13 +13,9 @@ class GoogleTranslator implements TranslatorInterface
     private $client;
 
     public function __construct(
-        string $apiKey
+        TranslateClient $client
     ) {
-        $this->client = new TranslateClient(
-            [
-                'key' => $apiKey
-            ]
-        );
+        $this->client = $client;
     }
 
     public function translate(string $text, Language $originalLanguageCode, Language $targetLanguageCode): string

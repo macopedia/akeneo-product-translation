@@ -1,11 +1,15 @@
 services:
   Piotrmus\Translator\Translator\GoogleTranslator:
     arguments:
-      - '%env(GOOGLE_API_KEY)%'
+      - '@Google\Cloud\Translate\V2\TranslateClient'
 
   Piotrmus\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor:
     arguments:
       - '@Piotrmus\Translator\Translator\GoogleTranslator'
+
+  Google\Cloud\Translate\V2\TranslateClient:
+    arguments:
+      - { apiKey: '%env(GOOGLE_API_KEY)%' }
 
   piotrmus.job.update_product_translations:
     class: Akeneo\Tool\Component\Batch\Job\Job

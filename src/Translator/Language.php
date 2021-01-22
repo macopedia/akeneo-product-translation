@@ -3,12 +3,11 @@
 
 namespace Piotrmus\Translator\Translator;
 
-
 use Webmozart\Assert\Assert;
 
 class Language
 {
-    private $codes = [
+    public const CODES = [
         'ab' => 'Abkhazian',
         'aa' => 'Afar',
         'af' => 'Afrikaans',
@@ -195,18 +194,25 @@ class Language
         'zu' => 'Zulu'
     ];
 
+    /**
+     * @var string
+     */
     private $code;
+
+    private function __construct(string $code)
+    {
+        $this->code = $code;
+    }
 
     /**
      * @param string $code
      * Language code in ISO 639-1 format
+     * @return Language
      */
-    public function __construct(string $code)
+    public static function fromCode(string $code): self
     {
-        $code = strtolower($code);
-        Assert::keyExists($this->codes, $code, "Language code must be in ISO 639-1");
-
-        $this->code = $code;
+        Assert::keyExists(self::CODES, $code, 'Language code must be in ISO 639-1');
+        return new self($code);
     }
 
     public function asString(): string

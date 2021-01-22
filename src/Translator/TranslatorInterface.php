@@ -3,7 +3,6 @@
 
 namespace Piotrmus\Translator\Translator;
 
-
 interface TranslatorInterface
 {
     /**
