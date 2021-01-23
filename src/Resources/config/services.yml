@@ -9,7 +9,7 @@ services:
 
   Google\Cloud\Translate\V2\TranslateClient:
     arguments:
-      - { apiKey: '%env(GOOGLE_API_KEY)%' }
+      - { key: '%env(GOOGLE_API_KEY)%' }
 
   piotrmus.job.update_product_translations:
     class: Akeneo\Tool\Component\Batch\Job\Job
