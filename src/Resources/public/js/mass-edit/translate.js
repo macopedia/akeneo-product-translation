@@ -39,10 +39,7 @@ define([
                     let channels = values[1];
                     let attributes = values[2];
 
-                    console.log(attributes.length);
-
                     attributes = attributes.filter(function (attribute) {
-                        console.log(attribute);
                         return attribute.localizable;
                     })
 
@@ -93,7 +90,6 @@ define([
             setFormValue: function (key, value) {
                 let data = this.getFormData();
                 data.actions[0][key] = value;
-                console.log(data.actions[0]);
                 this.setData(data);
             }
         });
