@@ -1,0 +1,12 @@
+piotrmus:
+  mass_edit:
+    attribute_translator:
+      label: "Przetłumacz atrybuty"
+      label_count: "{1}Przetłumacz atrybuty w <span class=\"AknFullPage-title--highlight\">1 produkcie</span>|]1, Inf[Przetłumacz atrybuty w <span class=\"AknFullPage-title--highlight\">{{ itemsCount }} produktach</span>"
+      description: "Przetłumacz atrybuty produktu."
+    form:
+      attributes_to_translate: "Atrybuty do przetłumaczenia"
+      source_channel: "Kanał źródła"
+      source_locale: "Język źródła"
+      target_channel: "Docelowy kanał"
+      target_locale: "Docelowy język"

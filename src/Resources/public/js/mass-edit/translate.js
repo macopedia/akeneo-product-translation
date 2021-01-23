@@ -8,6 +8,7 @@ define([
         'pim/fetcher-registry',
         'pim/initselect2',
         'pim/user-context',
+        'pim/i18n',
     ],
     function (
         $,
@@ -16,7 +17,8 @@ define([
         template,
         FetcherRegistry,
         initSelect2,
-        UserContext
+        UserContext,
+        i18n
     ) {
         return BaseOperation.extend({
             template: _.template(template),
@@ -27,14 +29,13 @@ define([
 
             render: function () {
                 let locales = FetcherRegistry.getFetcher('locale').fetchActivated();
-                let scopes = FetcherRegistry.getFetcher('channel').fetchAll();
+                let channels = FetcherRegistry.getFetcher('channel').fetchAll();
                 let attributes = FetcherRegistry.getFetcher('attribute').search({
                     options: {
-                        locale: UserContext.get('catalogLocale'),
                         limit: 1000
                     }
                 });
-                Promise.all([locales, scopes, attributes]).then(function (values) {
+                Promise.all([locales, channels, attributes]).then(function (values) {
                     let locales = values[0];
                     let channels = values[1];
                     let attributes = values[2];
@@ -65,6 +66,8 @@ define([
                         sourceLocale: model.actions[0].sourceLocale,
                         targetChannel: model.actions[0].targetChannel,
                         targetLocale: model.actions[0].targetLocale,
+                        i18n: i18n,
+                        uiLocale: UserContext.get('uiLocale')
                     }));
 
                     $('.select2').each(function (key, select) {

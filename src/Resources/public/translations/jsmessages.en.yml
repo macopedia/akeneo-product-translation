@@ -1,0 +1,12 @@
+piotrmus:
+  mass_edit:
+    attribute_translator:
+      label: "Translate attributes"
+      label_count: "{1}Translate attributes in <span class=\"AknFullPage-title--highlight\">1 product</span>|]1, Inf[Translate attributes in <span class=\"AknFullPage-title--highlight\">{{ itemsCount }} products</span>"
+      description: "Translate product attributes."
+    form:
+      attributes_to_translate: "Attributes to translate"
+      source_channel: "Source channel"
+      source_locale: "Source locale"
+      target_channel: "Target channel"
+      target_locale: "Target locale"
