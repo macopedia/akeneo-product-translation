@@ -6,6 +6,7 @@ services:
   Piotrmus\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor:
     arguments:
       - '@Piotrmus\Translator\Translator\GoogleTranslator'
+      - '@pim_catalog.repository.attribute'
 
   Google\Cloud\Translate\V2\TranslateClient:
     arguments:

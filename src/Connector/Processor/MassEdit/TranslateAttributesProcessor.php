@@ -8,6 +8,8 @@ use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ValueInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Value\ScalarValue;
+use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
+use Akeneo\Pim\Structure\Component\Repository\AttributeRepositoryInterface;
 use InvalidArgumentException;
 use Piotrmus\Translator\Translator\Language;
 use Piotrmus\Translator\Translator\TranslatorInterface;
@@ -18,10 +20,16 @@ class TranslateAttributesProcessor extends AbstractProcessor
      * @var TranslatorInterface
      */
     private $translator;
+    /**
+     * @var AttributeRepositoryInterface
+     */
+    private $attributeRepository;
 
     public function __construct(
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        AttributeRepositoryInterface $attributeRepository
     ) {
+        $this->attributeRepository = $attributeRepository;
         $this->translator = $translator;
     }
 
@@ -57,6 +65,11 @@ class TranslateAttributesProcessor extends AbstractProcessor
         $attributeCodes = $action['translatedAttributes'];
 
         foreach ($attributeCodes as $attributeCode) {
+            $attribute = $this->attributeRepository->findOneByIdentifier($attributeCode);
+            if (!$attribute->isScopable()) {
+                $sourceScope = null;
+                $targetScope = null;
+            }
             /** @var ValueInterface|null $attributeValue */
             $attributeValue = $product->getValue($attributeCode, $sourceLocaleAkeneo, $sourceScope);
 
@@ -72,38 +85,49 @@ class TranslateAttributesProcessor extends AbstractProcessor
                 $targetLocale
             );
 
-            $this->replaceProductValue($product, $attributeCode, $targetLocaleAkeneo, $targetScope, $translatedValue);
+            $this->replaceProductValue($product, $attribute, $targetLocaleAkeneo, $targetScope, $translatedValue);
         }
         return $product;
     }
 
     /**
      * @param ProductInterface $product
-     * @param string $attributeCode
+     * @param AttributeInterface $attribute
      * @param string $targetLocale
-     * @param string $targetScope
+     * @param string|null $targetScope
      * @param string $newValue
      */
     private function replaceProductValue(
         ProductInterface $product,
-        string $attributeCode,
+        AttributeInterface $attribute,
         string $targetLocale,
-        string $targetScope,
+        ?string $targetScope,
         string $newValue
     ): void {
-        $targetAttributeValue = $product->getValue($attributeCode, $targetLocale, $targetScope);
+        $targetAttributeValue = $product->getValue($attribute->getCode(), $targetLocale, $targetScope);
+
+        $isScopable = $attribute->isScopable();
+        $isLocalizable = $attribute->isLocalizable();
+
+        if ($isScopable && $isLocalizable) {
+            $value = ScalarValue::scopableLocalizableValue(
+                $attribute->getCode(),
+                $newValue,
+                $targetScope,
+                $targetLocale
+            );
+        } elseif ($isScopable) {
+            $value = ScalarValue::scopableValue($attribute->getCode(), $newValue, $targetScope);
+        } elseif ($isLocalizable) {
+            $value = ScalarValue::localizableValue($attribute->getCode(), $newValue, $targetLocale);
+        } else {
+            $value = ScalarValue::value($attribute->getCode(), $newValue);
+        }
 
         if ($targetAttributeValue !== null) {
             $product->removeValue($targetAttributeValue);
         }
 
-        $product->addValue(
-            ScalarValue::scopableLocalizableValue(
-                $attributeCode,
-                $newValue,
-                $targetScope,
-                $targetLocale
-            )
-        );
+        $product->addValue($value);
     }
 }
