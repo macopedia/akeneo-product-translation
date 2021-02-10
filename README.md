@@ -26,6 +26,12 @@ define Google Cloud Translate API Key in `.env` file:
 GOOGLE_API_KEY=yourapikey
 ```
 
+add new job instance
+
+```shell
+bin/console akeneo:batch:create-job internal update_product_translations mass_edit update_product_translations '{}' 'Translate product'
+```
+
 ### Features:
 
 With Akeneo Product Attributes Translator you can make mass edit job to translate multiple text attributes from one
