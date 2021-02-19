@@ -31,6 +31,7 @@ define([
                 let locales = FetcherRegistry.getFetcher('locale').fetchActivated();
                 let channels = FetcherRegistry.getFetcher('channel').fetchAll();
                 let attributes = FetcherRegistry.getFetcher('attribute').search({
+                    types: 'pim_catalog_text,pim_catalog_textarea',
                     options: {
                         limit: 1000
                     }
