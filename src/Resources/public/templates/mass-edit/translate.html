@@ -7,11 +7,11 @@
     </div>
     <div class="AknFieldContainer-inputContainer">
         <select name="translatedAttributes[]" id="translated-attributes" class="select2 label-field AknSettingField"
-                multiple="multiple">
-            <% _.each(attributes, function (attribute){ %>
-            <option value="<%= attribute.code %>"><%- i18n.getLabel(attribute.labels, uiLocale, attribute.code) %>
-            </option>
-            <% }); %>
+                multiple="multiple" <% if(translatedAttributes.length > 0){ %> readonly="true"<% } %>>
+        <% _.each(attributes, function (attribute){ %>
+        <option value="<%= attribute.code %>" <% if(translatedAttributes.includes(attribute.code)){ %>selected="selected"<% } %>><%- i18n.getLabel(attribute.labels, uiLocale, attribute.code) %>
+        </option>
+        <% }); %>
         </select>
     </div>
 </div>
@@ -22,10 +22,10 @@
         </label>
     </div>
     <div class="AknFieldContainer-inputContainer">
-        <select name="sourceChannel" id="source-channel" class="select2 form-field label-field AknSettingField">
-            <% _.each(channels, function (channel, key){ %>
-            <option value="<%= channel.code %>"><%- i18n.getLabel(channel.labels, uiLocale, channel.code) %></option>
-            <% }); %>
+        <select name="sourceChannel" id="source-channel" class="select2 form-field label-field AknSettingField" <% if(translatedAttributes.length > 0){ %> readonly="true"<% } %>>
+        <% _.each(channels, function (channel, key){ %>
+        <option value="<%= channel.code %>" <% if(channel.code == sourceChannel){ %>selected="selected"<% } %>><%- i18n.getLabel(channel.labels, uiLocale, channel.code) %></option>
+        <% }); %>
         </select>
     </div>
 </div>
@@ -36,10 +36,10 @@
         </label>
     </div>
     <div class="AknFieldContainer-inputContainer">
-        <select name="sourceLocale" id="source-locale" class="select2 form-field label-field AknSettingField">
-            <% _.each(locales, function (locale, key){ %>
-            <option value="<%= locale.code %>"><%= locale.label %></option>
-            <% }); %>
+        <select name="sourceLocale" id="source-locale" class="select2 form-field label-field AknSettingField" <% if(translatedAttributes.length > 0){ %> readonly="true"<% } %>>
+        <% _.each(locales, function (locale, key){ %>
+        <option value="<%= locale.code %>" <% if(locale.code == sourceLocale){ %>selected="selected"<% } %>><%= locale.label %></option>
+        <% }); %>
         </select>
     </div>
 </div>
@@ -50,10 +50,10 @@
         </label>
     </div>
     <div class="AknFieldContainer-inputContainer">
-        <select name="targetChannel" id="target-channel" class="select2 form-field label-field AknSettingField">
-            <% _.each(channels, function (channel, key){ %>
-            <option value="<%= channel.code %>"><%- i18n.getLabel(channel.labels, uiLocale, channel.code) %></option>
-            <% }); %>
+        <select name="targetChannel" id="target-channel" class="select2 form-field label-field AknSettingField" <% if(translatedAttributes.length > 0){ %> readonly="true"<% } %>>
+        <% _.each(channels, function (channel, key){ %>
+        <option value="<%= channel.code %>" <% if(channel.code == targetChannel){ %>selected="selected"<% } %>><%- i18n.getLabel(channel.labels, uiLocale, channel.code) %></option>
+        <% }); %>
         </select>
     </div>
 </div>
@@ -64,10 +64,10 @@
         </label>
     </div>
     <div class="AknFieldContainer-inputContainer">
-        <select name="targetLocale" id="target-locale" class="select2 form-field label-field AknSettingField">
-            <% _.each(locales, function (locale, key){ %>
-            <option value="<%= locale.code %>"><%= locale.label %></option>
-            <% }); %>
+        <select name="targetLocale" id="target-locale" class="select2 form-field label-field AknSettingField" <% if(translatedAttributes.length > 0){ %> readonly="true"<% } %>>
+        <% _.each(locales, function (locale, key){ %>
+        <option value="<%= locale.code %>" <% if(locale.code == targetLocale){ %>selected="selected"<% } %>><%= locale.label %></option>
+        <% }); %>
         </select>
     </div>
 </div>

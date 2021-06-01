@@ -63,6 +63,7 @@ define([
                         locales: locales,
                         channels: channels,
                         attributes: attributes,
+                        translatedAttributes: model.actions[0].translatedAttributes,
                         sourceChannel: model.actions[0].sourceChannel,
                         sourceLocale: model.actions[0].sourceLocale,
                         targetChannel: model.actions[0].targetChannel,
