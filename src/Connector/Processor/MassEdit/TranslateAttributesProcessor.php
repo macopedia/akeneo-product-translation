@@ -10,6 +10,8 @@ use Akeneo\Pim\Enrichment\Component\Product\Model\ValueInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Value\ScalarValue;
 use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
 use Akeneo\Pim\Structure\Component\Repository\AttributeRepositoryInterface;
+use Akeneo\Tool\Component\Batch\Item\DataInvalidItem;
+use Akeneo\Tool\Component\Batch\Item\InvalidItemException;
 use InvalidArgumentException;
 use Piotrmus\Translator\Translator\Language;
 use Piotrmus\Translator\Translator\TranslatorInterface;
@@ -66,6 +68,24 @@ class TranslateAttributesProcessor extends AbstractProcessor
 
         foreach ($attributeCodes as $attributeCode) {
             $attribute = $this->attributeRepository->findOneByIdentifier($attributeCode);
+            if (!$this->canEditAttribute($product, $attribute)) {
+                throw new InvalidItemException(
+                    sprintf(
+                        "You can not edit attribute \"%s\" in this product \"%s\". Most common reason is that attribute is on another level.",
+                        (string)$attributeCode,
+                        $product->getIdentifier()
+                    ),
+                    new DataInvalidItem(
+                        [
+                            'identifier' => $product->getIdentifier(),
+                            'source_attribute' => $attributeCode,
+                            'source_language' => $sourceLocale->asString(),
+                            'source_channel' => $sourceScope,
+                        ]
+                    )
+                );
+            }
+
             if (!$attribute->isScopable()) {
                 $sourceScope = null;
                 $targetScope = null;
@@ -88,6 +108,29 @@ class TranslateAttributesProcessor extends AbstractProcessor
             $this->replaceProductValue($product, $attribute, $targetLocaleAkeneo, $targetScope, $translatedValue);
         }
         return $product;
+    }
+
+    private function canEditAttribute($product, $attribute): bool
+    {
+        if (
+            (
+                ($product instanceof ProductInterface && $product->isVariant())
+                || $product instanceof ProductModelInterface
+            )
+            && $product->getFamilyVariant() !== null
+            && $product->getFamilyVariant()->getLevelForAttributeCode(
+                $attribute->getCode()
+            ) !== $product->getVariationLevel()
+        ) {
+            return false;
+        }
+        if (
+            $product instanceof ProductInterface
+            && !$product->hasAttributeInFamily($attribute)
+        ) {
+            return false;
+        }
+        return true;
     }
 
     /**
