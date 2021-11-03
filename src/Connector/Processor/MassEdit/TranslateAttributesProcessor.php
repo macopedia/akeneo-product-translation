@@ -4,14 +4,17 @@
 namespace Piotrmus\Translator\Connector\Processor\MassEdit;
 
 use Akeneo\Pim\Enrichment\Component\Product\Connector\Processor\MassEdit\AbstractProcessor;
+use Akeneo\Pim\Enrichment\Component\Product\EntityWithFamilyVariant\CheckAttributeEditable;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ValueInterface;
+use Akeneo\Pim\Enrichment\Component\Product\Updater\Setter\AttributeSetterInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Value\ScalarValue;
 use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
 use Akeneo\Pim\Structure\Component\Repository\AttributeRepositoryInterface;
 use Akeneo\Tool\Component\Batch\Item\DataInvalidItem;
 use Akeneo\Tool\Component\Batch\Item\InvalidItemException;
+use Akeneo\Tool\Component\StorageUtils\Updater\PropertySetterInterface;
 use InvalidArgumentException;
 use Piotrmus\Translator\Translator\Language;
 use Piotrmus\Translator\Translator\TranslatorInterface;
@@ -26,13 +29,25 @@ class TranslateAttributesProcessor extends AbstractProcessor
      * @var AttributeRepositoryInterface
      */
     private $attributeRepository;
+    /**
+     * @var CheckAttributeEditable
+     */
+    private $checkAttributeEditable;
+    /**
+     * @var PropertySetterInterface
+     */
+    private $propertySetter;
 
     public function __construct(
         TranslatorInterface $translator,
-        AttributeRepositoryInterface $attributeRepository
+        AttributeRepositoryInterface $attributeRepository,
+        CheckAttributeEditable $checkAttributeEditable,
+        PropertySetterInterface $propertySetter
     ) {
         $this->attributeRepository = $attributeRepository;
         $this->translator = $translator;
+        $this->checkAttributeEditable = $checkAttributeEditable;
+        $this->propertySetter = $propertySetter;
     }
 
     /**
@@ -54,6 +69,16 @@ class TranslateAttributesProcessor extends AbstractProcessor
     /**
      * @param ProductInterface|ProductModelInterface $product
      * @param array<string, string|array<int, string>> $action
+     *  $actions = [
+     *      'sourceChannel' => 'ecommerce',
+     *      'targetChannel' => 'ecommerce',
+     *      'sourceLocale' => 'pl_PL',
+     *      'targetLocale' => 'en_US',
+     *      'translatedAttributes' => [
+     *          'name',
+     *          'description',
+     *     ]
+     *  ];
      * @return ProductInterface|ProductModelInterface
      */
     private function translateAttributes($product, array $action)
@@ -67,23 +92,10 @@ class TranslateAttributesProcessor extends AbstractProcessor
         $attributeCodes = $action['translatedAttributes'];
 
         foreach ($attributeCodes as $attributeCode) {
+            /** @var AttributeInterface|null $attribute */
             $attribute = $this->attributeRepository->findOneByIdentifier($attributeCode);
-            if (!$this->canEditAttribute($product, $attribute)) {
-                throw new InvalidItemException(
-                    sprintf(
-                        "You can not edit attribute \"%s\" in this product \"%s\". Most common reason is that attribute is on another level.",
-                        (string)$attributeCode,
-                        $product->getIdentifier()
-                    ),
-                    new DataInvalidItem(
-                        [
-                            'identifier' => $product->getIdentifier(),
-                            'source_attribute' => $attributeCode,
-                            'source_language' => $sourceLocale->asString(),
-                            'source_channel' => $sourceScope,
-                        ]
-                    )
-                );
+            if (!$this->checkAttributeEditable->isEditable($product, $attribute)) {
+                continue;
             }
 
             if (!$attribute->isScopable()) {
@@ -92,85 +104,24 @@ class TranslateAttributesProcessor extends AbstractProcessor
             }
             /** @var ValueInterface|null $attributeValue */
             $attributeValue = $product->getValue($attributeCode, $sourceLocaleAkeneo, $sourceScope);
-
             if ($attributeValue === null) {
                 continue;
             }
 
             $sourceText = $attributeValue->getData();
 
-            $translatedValue = $this->translator->translate(
+            $translatedText = $this->translator->translate(
                 $sourceText,
                 $sourceLocale,
                 $targetLocale
             );
 
-            $this->replaceProductValue($product, $attribute, $targetLocaleAkeneo, $targetScope, $translatedValue);
+            $this->propertySetter->setData($product, $attribute->getCode(), $translatedText, [
+                'locale' => $targetLocaleAkeneo,
+                'scope' => $targetScope,
+            ]);
         }
+
         return $product;
-    }
-
-    private function canEditAttribute($product, $attribute): bool
-    {
-        if (
-            (
-                ($product instanceof ProductInterface && $product->isVariant())
-                || $product instanceof ProductModelInterface
-            )
-            && $product->getFamilyVariant() !== null
-            && $product->getFamilyVariant()->getLevelForAttributeCode(
-                $attribute->getCode()
-            ) !== $product->getVariationLevel()
-        ) {
-            return false;
-        }
-        if (
-            $product instanceof ProductInterface
-            && !$product->hasAttributeInFamily($attribute)
-        ) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @param ProductInterface $product
-     * @param AttributeInterface $attribute
-     * @param string $targetLocale
-     * @param string|null $targetScope
-     * @param string $newValue
-     */
-    private function replaceProductValue(
-        ProductInterface $product,
-        AttributeInterface $attribute,
-        string $targetLocale,
-        ?string $targetScope,
-        string $newValue
-    ): void {
-        $targetAttributeValue = $product->getValue($attribute->getCode(), $targetLocale, $targetScope);
-
-        $isScopable = $attribute->isScopable();
-        $isLocalizable = $attribute->isLocalizable();
-
-        if ($isScopable && $isLocalizable) {
-            $value = ScalarValue::scopableLocalizableValue(
-                $attribute->getCode(),
-                $newValue,
-                $targetScope,
-                $targetLocale
-            );
-        } elseif ($isScopable) {
-            $value = ScalarValue::scopableValue($attribute->getCode(), $newValue, $targetScope);
-        } elseif ($isLocalizable) {
-            $value = ScalarValue::localizableValue($attribute->getCode(), $newValue, $targetLocale);
-        } else {
-            $value = ScalarValue::value($attribute->getCode(), $newValue);
-        }
-
-        if ($targetAttributeValue !== null) {
-            $product->removeValue($targetAttributeValue);
-        }
-
-        $product->addValue($value);
     }
 }

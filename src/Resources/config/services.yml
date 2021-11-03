@@ -7,6 +7,8 @@ services:
     arguments:
       - '@Piotrmus\Translator\Translator\GoogleTranslator'
       - '@pim_catalog.repository.attribute'
+      - '@pim_catalog.entity_with_family_variant.check_attribute_editable'
+      - '@pim_catalog.updater.entity_with_values_property_setter_without_permission'
 
   Google\Cloud\Translate\V2\TranslateClient:
     arguments:
@@ -37,12 +39,13 @@ services:
       - { name: akeneo_batch.job.job_parameters.constraint_collection_provider }
 
   piotrmus.step.update_product_translations.mass_edit:
-    class: Akeneo\Tool\Component\Batch\Step\ItemStep
+    class: '%pim_connector.step.item_step.class%'
     arguments:
       - 'perform'
       - '@event_dispatcher'
       - '@akeneo_batch.job_repository'
-      - '@pim_enrich.reader.database.products_and_variant_products_of_product_models'
+      - '@pim_enrich.reader.database.product_and_product_model'
       - '@Piotrmus\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor'
-      - '@pim_connector.writer.database.product'
-      - 10
+      - '@pim_enrich.writer.database.product_and_product_model_writer'
+      - '%pim_job_product_batch_size%'
+      - '@akeneo_batch.job.job_stopper'
