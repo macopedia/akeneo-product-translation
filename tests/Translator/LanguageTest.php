@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use Piotrmus\Translator\Translator\Language;
 use PHPUnit\Framework\TestCase;
 
-class LanguageTest extends TestCase
+final class LanguageTest extends TestCase
 {
     /**
      * @dataProvider dataProvider

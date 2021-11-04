@@ -5,7 +5,7 @@ namespace Piotrmus\Translator\Translator;
 
 use Google\Cloud\Translate\V2\TranslateClient;
 
-class GoogleTranslator implements TranslatorInterface
+final class GoogleTranslator implements TranslatorInterface
 {
     /**
      * @var TranslateClient

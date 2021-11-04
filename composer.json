@@ -2,7 +2,7 @@
   "name": "piotrmus/akeneo-product-translation",
   "type": "symfony-bundle",
   "description": "Translation extension for Akeneo",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "license": "OSL-3.0",
   "authors": [
     {
@@ -26,7 +26,7 @@
   },
   "scripts": {
     "phpstan": [
-      "vendor/bin/phpstan analyse -c phpstan.neon"
+      "vendor/bin/phpstan --configuration=phpstan.neon"
     ],
     "phpunit": [
       "vendor/bin/phpunit --colors=always"

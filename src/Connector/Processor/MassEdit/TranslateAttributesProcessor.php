@@ -8,18 +8,15 @@ use Akeneo\Pim\Enrichment\Component\Product\EntityWithFamilyVariant\CheckAttribu
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ValueInterface;
-use Akeneo\Pim\Enrichment\Component\Product\Updater\Setter\AttributeSetterInterface;
-use Akeneo\Pim\Enrichment\Component\Product\Value\ScalarValue;
 use Akeneo\Pim\Structure\Component\Model\AttributeInterface;
 use Akeneo\Pim\Structure\Component\Repository\AttributeRepositoryInterface;
-use Akeneo\Tool\Component\Batch\Item\DataInvalidItem;
-use Akeneo\Tool\Component\Batch\Item\InvalidItemException;
 use Akeneo\Tool\Component\StorageUtils\Updater\PropertySetterInterface;
+use Exception;
 use InvalidArgumentException;
 use Piotrmus\Translator\Translator\Language;
 use Piotrmus\Translator\Translator\TranslatorInterface;
 
-class TranslateAttributesProcessor extends AbstractProcessor
+final class TranslateAttributesProcessor extends AbstractProcessor
 {
     /**
      * @var TranslatorInterface
@@ -53,6 +50,7 @@ class TranslateAttributesProcessor extends AbstractProcessor
     /**
      * @param mixed $item
      * @return ProductInterface|ProductModelInterface
+     * @throws Exception
      */
     public function process($item)
     {
@@ -80,6 +78,7 @@ class TranslateAttributesProcessor extends AbstractProcessor
      *     ]
      *  ];
      * @return ProductInterface|ProductModelInterface
+     * @throws Exception
      */
     private function translateAttributes($product, array $action)
     {
@@ -116,7 +115,7 @@ class TranslateAttributesProcessor extends AbstractProcessor
                 $targetLocale
             );
 
-            $this->propertySetter->setData($product, $attribute->getCode(), $translatedText, [
+            $this->propertySetter->setData($product, $attributeCode, $translatedText, [
                 'locale' => $targetLocaleAkeneo,
                 'scope' => $targetScope,
             ]);

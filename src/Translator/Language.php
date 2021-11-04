@@ -5,7 +5,7 @@ namespace Piotrmus\Translator\Translator;
 
 use Webmozart\Assert\Assert;
 
-class Language
+final class Language
 {
     public const CODES = [
         'ab' => 'Abkhazian',
