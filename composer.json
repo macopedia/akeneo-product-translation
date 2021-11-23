@@ -2,7 +2,7 @@
   "name": "piotrmus/akeneo-product-translation",
   "type": "symfony-bundle",
   "description": "Translation extension for Akeneo",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "license": "OSL-3.0",
   "authors": [
     {
