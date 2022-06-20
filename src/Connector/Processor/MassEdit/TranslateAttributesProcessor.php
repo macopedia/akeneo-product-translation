@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Piotrmus\Translator\Connector\Processor\MassEdit;
+namespace Macopedia\Translator\Connector\Processor\MassEdit;
 
 use Akeneo\Pim\Enrichment\Component\Product\Connector\Processor\MassEdit\AbstractProcessor;
 use Akeneo\Pim\Enrichment\Component\Product\EntityWithFamilyVariant\CheckAttributeEditable;
@@ -13,8 +13,8 @@ use Akeneo\Pim\Structure\Component\Repository\AttributeRepositoryInterface;
 use Akeneo\Tool\Component\StorageUtils\Updater\PropertySetterInterface;
 use Exception;
 use InvalidArgumentException;
-use Piotrmus\Translator\Translator\Language;
-use Piotrmus\Translator\Translator\TranslatorInterface;
+use Macopedia\Translator\Translator\Language;
+use Macopedia\Translator\Translator\TranslatorInterface;
 
 final class TranslateAttributesProcessor extends AbstractProcessor
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Piotrmus\Translator;
+namespace Macopedia\Translator;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-final class PiotrmusTranslatorBundle extends Bundle
+final class MacopediaTranslatorBundle extends Bundle
 {
 }

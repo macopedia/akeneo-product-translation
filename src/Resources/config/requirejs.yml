@@ -1,4 +1,4 @@
 config:
   paths:
-    piotrmus-translator/mass-edit/translate: piotrmustranslator/js/mass-edit/translate
-    piotrmus-translator/template/mass-edit/translate: piotrmustranslator/templates/mass-edit/translate.html
+    macopedia-translator/mass-edit/translate: macopediatranslator/js/mass-edit/translate
+    macopedia-translator/template/mass-edit/translate: macopediatranslator/templates/mass-edit/translate.html

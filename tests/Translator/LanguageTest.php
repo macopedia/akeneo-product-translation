@@ -3,7 +3,7 @@
 namespace Translator;
 
 use InvalidArgumentException;
-use Piotrmus\Translator\Translator\Language;
+use Macopedia\Translator\Translator\Language;
 use PHPUnit\Framework\TestCase;
 
 final class LanguageTest extends TestCase

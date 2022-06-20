@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Piotrmus\Translator\Translator;
+namespace Macopedia\Translator\Translator;
 
 use Webmozart\Assert\Assert;
 

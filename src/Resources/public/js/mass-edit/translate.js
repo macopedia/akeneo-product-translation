@@ -4,7 +4,7 @@ define([
         'jquery',
         'underscore',
         'pim/mass-edit-form/product/operation',
-        'piotrmus-translator/template/mass-edit/translate',
+        'macopedia-translator/template/mass-edit/translate',
         'pim/fetcher-registry',
         'pim/initselect2',
         'pim/user-context',

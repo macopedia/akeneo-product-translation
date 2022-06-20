@@ -11,9 +11,9 @@ use Akeneo\Tool\Component\Batch\Job\JobParameters;
 use Akeneo\Tool\Component\Batch\Model\StepExecution;
 use Akeneo\Tool\Component\StorageUtils\Updater\PropertySetterInterface;
 use Exception;
-use Piotrmus\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor;
+use Macopedia\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor;
 use PHPUnit\Framework\TestCase;
-use Piotrmus\Translator\Translator\TranslatorInterface;
+use Macopedia\Translator\Translator\TranslatorInterface;
 
 final class TranslateAttributesProcessorTest extends TestCase
 {

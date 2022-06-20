@@ -7,7 +7,7 @@ Akeneo's extension adding new mass edit type "Translate attributes".
 Install composer dependency
 
 ```shell
-composer require piotrmus/akeneo-product-translation
+composer require macopedia/akeneo-product-translation
 ```
 
 register bundle in `config/bundles.php`
@@ -15,7 +15,7 @@ register bundle in `config/bundles.php`
 ```php
 
 return [
-    \Piotrmus\Translator\PiotrmusTranslatorBundle::class => ['dev' => true, 'test' => true, 'prod' => true],
+    \Macopedia\Translator\MacopediaTranslatorBundle::class => ['dev' => true, 'test' => true, 'prod' => true],
 ];
 
 ```

@@ -1,11 +1,11 @@
 services:
-  Piotrmus\Translator\Translator\GoogleTranslator:
+  Macopedia\Translator\Translator\GoogleTranslator:
     arguments:
       - '@Google\Cloud\Translate\V2\TranslateClient'
 
-  Piotrmus\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor:
+  Macopedia\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor:
     arguments:
-      - '@Piotrmus\Translator\Translator\GoogleTranslator'
+      - '@Macopedia\Translator\Translator\GoogleTranslator'
       - '@pim_catalog.repository.attribute'
       - '@pim_catalog.entity_with_family_variant.check_attribute_editable'
       - '@pim_catalog.updater.property_setter'
@@ -14,37 +14,37 @@ services:
     arguments:
       - { key: '%env(GOOGLE_API_KEY)%' }
 
-  piotrmus.job.update_product_translations:
+  macopedia.job.update_product_translations:
     class: Akeneo\Tool\Component\Batch\Job\Job
     arguments:
       - 'update_product_translations'
       - '@event_dispatcher'
       - '@akeneo_batch.job_repository'
-      - [ '@piotrmus.step.update_product_translations.mass_edit' ]
+      - [ '@macopedia.step.update_product_translations.mass_edit' ]
     tags:
       - { name: akeneo_batch.job, connector: '%pim_enrich.connector_name.mass_edit%', type: '%pim_enrich.job.mass_edit_type%' }
 
-  piotrmus.job.default_values_provider.translate_product:
+  macopedia.job.default_values_provider.translate_product:
     class: Akeneo\Pim\Enrichment\Component\Product\Connector\Job\JobParameters\DefaultValueProvider\ProductMassEdit
     arguments:
       - [ 'update_product_translations' ]
     tags:
       - { name: akeneo_batch.job.job_parameters.default_values_provider }
 
-  piotrmus.job.constraint_collection_provider.translate_product:
+  macopedia.job.constraint_collection_provider.translate_product:
     class: Akeneo\Pim\Enrichment\Component\Product\Connector\Job\JobParameters\ConstraintCollectionProvider\ProductMassEdit
     arguments:
       - [ 'update_product_translations' ]
     tags:
       - { name: akeneo_batch.job.job_parameters.constraint_collection_provider }
 
-  piotrmus.step.update_product_translations.mass_edit:
+  macopedia.step.update_product_translations.mass_edit:
     class: '%pim_connector.step.item_step.class%'
     arguments:
       - 'perform'
       - '@event_dispatcher'
       - '@akeneo_batch.job_repository'
       - '@pim_enrich.reader.database.product_and_product_model'
-      - '@Piotrmus\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor'
+      - '@Macopedia\Translator\Connector\Processor\MassEdit\TranslateAttributesProcessor'
       - '@pim_enrich.writer.database.product_and_product_model_writer'
       - '%pim_job_product_batch_size%'

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Piotrmus\Translator\Translator;
+namespace Macopedia\Translator\Translator;
 
 use Google\Cloud\Translate\V2\TranslateClient;
 

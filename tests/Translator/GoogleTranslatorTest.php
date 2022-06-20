@@ -4,9 +4,9 @@ namespace Translator;
 
 use Google\Cloud\Translate\V2\TranslateClient;
 use PHPUnit\Framework\MockObject\MockObject;
-use Piotrmus\Translator\Translator\GoogleTranslator;
+use Macopedia\Translator\Translator\GoogleTranslator;
 use PHPUnit\Framework\TestCase;
-use Piotrmus\Translator\Translator\Language;
+use Macopedia\Translator\Translator\Language;
 
 final class GoogleTranslatorTest extends TestCase
 {
