@@ -2,16 +2,17 @@
   "name": "macopedia/akeneo-product-translation",
   "type": "symfony-bundle",
   "description": "Translation extension for Akeneo",
-  "version": "0.1.13",
+  "version": "0.2.0",
   "license": "OSL-3.0",
   "authors": [
     {
       "name": "Piotr Musiał",
-      "homepage": "https://www.codehat.pl"
+      "email": "piotrmus@gmail.com",
+      "homepage": "https://www.macopedia.com"
     }
   ],
   "require": {
-    "akeneo/pim-community-dev": "^4.0.0||^5.0.0",
+    "akeneo/pim-community-dev": "^4.0.0||^5.0.0||^6.0.0",
     "google/cloud-translate": "^1.9"
   },
   "require-dev": {
@@ -39,5 +40,10 @@
     "cs:fix": [
       "vendor/bin/php-cs-fixer fix"
     ]
+  },
+  "config": {
+    "allow-plugins": {
+      "symfony/flex": true
+    }
   }
 }

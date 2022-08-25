@@ -1,0 +1,4 @@
+pim_enrich_mass_translation:
+  type: action
+  label: macopedia.acl.label
+  group_name: pim_enrich.acl_group.product
