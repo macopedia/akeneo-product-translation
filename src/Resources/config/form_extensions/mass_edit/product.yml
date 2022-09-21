@@ -3,7 +3,7 @@ extensions:
     module: macopedia-translator/mass-edit/translate
     parent: pim-mass-product-edit
     position: 500
-    aclResourceId: pim_enrich_product_edit_attributes
+    aclResourceId: pim_enrich_mass_translation
     config:
       title: pim_enrich.mass_edit.product.title
       label: macopedia.mass_edit.attribute_translator.label

@@ -2,7 +2,7 @@
   "name": "macopedia/akeneo-product-translation",
   "type": "symfony-bundle",
   "description": "Translation extension for Akeneo",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "OSL-3.0",
   "authors": [
     {
